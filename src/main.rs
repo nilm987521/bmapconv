@@ -2,7 +2,7 @@ use std::io;
 use std::env;
 use regex::Regex;
 use structopt::StructOpt;
-use colored::*;
+use colored::Colorize;
 
 // 設定程式基本訊息
 #[derive(StructOpt, Debug)]
@@ -10,6 +10,7 @@ use colored::*;
     name = "bmapconv", 
     about = "BitMap(64位)轉換工具",
     author = "Nilm <nilm987521@gmail.com>",
+    version = env!("VERGEN_GIT_SHA")
 )]
 
 // 設定可用的參數
