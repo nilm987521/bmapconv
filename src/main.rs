@@ -1,8 +1,8 @@
-use std::io;
-use std::env;
-use regex::Regex;
-use structopt::StructOpt;
 use colored::Colorize;
+use regex::Regex;
+use std::env;
+use std::io;
+use structopt::StructOpt;
 
 // 設定程式基本訊息
 #[derive(StructOpt, Debug)]
@@ -26,7 +26,6 @@ struct Opt {
     /// 輸入選擇項
     #[structopt(short = "I", long = "indexes")]
     inds: Option<Vec<String>>,
-
 }
 
 // 靜態常數
@@ -69,7 +68,7 @@ fn inds_to_bin(args: &str) -> String {
     let mut vec_of_zeros: Vec<&str> = vec!["0"; 64];
     for arg in args.split_whitespace() {
         let index: usize = arg.parse().expect("Error parsing integer");
-        if let Some(element) = vec_of_zeros.get_mut(index - 1){
+        if let Some(element) = vec_of_zeros.get_mut(index - 1) {
             *element = "1";
         } else {
             println!("Index out of bounds");
@@ -100,7 +99,12 @@ fn _loop_mode() {
     loop {
         // 讀取使用者的輸入
         let mut input: String = String::new();
-        println!("請輸入[{}]或[{}]或[{}]: ", "二進位字串".red(), "十六進位字串".blue(), "選項(多選項用空格分隔)".yellow());
+        println!(
+            "請輸入[{}]或[{}]或[{}]: ",
+            "二進位字串".red(),
+            "十六進位字串".blue(),
+            "選項(多選項用空格分隔)".yellow()
+        );
         io::stdin().read_line(&mut input).expect("輸入錯誤");
 
         input = input.trim_end().to_string();
@@ -110,7 +114,11 @@ fn _loop_mode() {
         // }
 
         // 輸入exit時結束
-        if input.to_lowercase() == "exit" || input.to_lowercase() == "quit" || input == "結束" || input == "離開" {
+        if input.to_lowercase() == "exit"
+            || input.to_lowercase() == "quit"
+            || input == "結束"
+            || input == "離開"
+        {
             break;
         }
 
@@ -124,30 +132,41 @@ fn _loop_mode() {
         } else {
             print!("無效的輸入，請檢查長度及格式，");
         }
-
     }
 }
 
 fn main() {
     // args[0] 是自己的絕對路徑，所以跳過
     let args: Vec<String> = env::args().skip(1).collect();
-    
+
     if args.len() > 0 {
         let opt = Opt::from_args();
-        let mut act:bool = false;
+        let mut act: bool = false;
 
         // if  有使用指定參數，並符合正規表達式
-        if let Some(hex) = opt.hex.as_ref().filter(|&h| HEX_PATTERN.is_match(h.as_str())) {
+        if let Some(hex) = opt
+            .hex
+            .as_ref()
+            .filter(|&h| HEX_PATTERN.is_match(h.as_str()))
+        {
             act = true;
             _convert_hex(hex);
         }
 
-        if let Some(bin) = opt.bin.as_ref().filter(|&b| BIN_PATTERN.is_match(b.as_str())) {
+        if let Some(bin) = opt
+            .bin
+            .as_ref()
+            .filter(|&b| BIN_PATTERN.is_match(b.as_str()))
+        {
             act = true;
             _convert_bin(bin);
         }
 
-        if let Some(sel) = opt.inds.as_ref().filter(|&s| SEL_PATTERN.is_match(&s.join(" "))) {
+        if let Some(sel) = opt
+            .inds
+            .as_ref()
+            .filter(|&s| SEL_PATTERN.is_match(&s.join(" ")))
+        {
             act = true;
             _convert_inds(&sel.join(" ").as_str());
         }
@@ -167,7 +186,7 @@ mod tests {
     static HEX: &'static str = "F000000FF000000F";
     const BIN: &'static str = "1111000000000000000000000000111111110000000000000000000000001111";
     const INDS: &'static str = "1 2 3 4 29 30 31 32 33 34 35 36 61 62 63 64";
- 
+
     #[test]
     fn test_hex() {
         assert_eq!(hex_to_bin(&HEX), BIN);

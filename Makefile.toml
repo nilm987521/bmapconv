@@ -1,0 +1,50 @@
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+dependencies = ["clean"]
+
+[tasks.build_linux]
+install_crate = "cross"
+command = "cross"
+args = [
+    "build",
+    "--release",
+    "--target",
+    "x86_64-unknown-linux-gnu",
+]
+
+[tasks.upx_linux]
+command = "upx"
+args = ["target/x86_64-unknown-linux-gnu/release/bmapconv"]
+dependencies = ["build_linux"]
+
+[tasks.build_win]
+install_crate = "cross"
+command = "cross"
+args = [
+    "build",
+    "--release",
+    "--target",
+    "x86_64-pc-windows-gnu"
+]
+
+[tasks.upx_win]
+command = "upx"
+args = ["target/x86_64-pc-windows-gnu/release/bmapconv.exe"]
+dependencies = ["build_win"]
+
+[tasks.all]
+run_task = { name = ["upx_win", "upx_linux"] }
+dependencies = [
+    "format",
+    "test"
+]
