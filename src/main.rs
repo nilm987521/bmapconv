@@ -33,7 +33,7 @@ lazy_static::lazy_static! {
     // 靜態常數，Regex模板
     static ref HEX_PATTERN: Regex = Regex::new(r"^[0-9a-fA-F]{16}$").unwrap();
     static ref BIN_PATTERN: Regex = Regex::new(r"^[01]{64}$").unwrap();
-    static ref SEL_PATTERN: Regex = Regex::new(r"^([0-9]{1,2}\s){1,64}").unwrap();
+    static ref SEL_PATTERN: Regex = Regex::new(r"^([0-9]{1,2}\s*){1,64}").unwrap();
 }
 
 /// 16進位轉2進位
@@ -64,17 +64,17 @@ fn bin_to_inds(binary_number: &str) -> String {
 }
 
 /// BitMap的index轉2進位
-fn inds_to_bin(args: &str) -> String {
+fn inds_to_bin(args: &str) -> Result<String, &'static str> {
     let mut vec_of_zeros: Vec<&str> = vec!["0"; 64];
     for arg in args.split_whitespace() {
-        let index: usize = arg.parse().expect("Error parsing integer");
-        if let Some(element) = vec_of_zeros.get_mut(index - 1) {
-            *element = "1";
+        let index: usize = arg.parse().map_err(|_| "索引必須是數字")?;
+        if index >= 1 && index <= 64 {
+            vec_of_zeros[index - 1] = "1";
         } else {
-            println!("Index out of bounds");
+            return Err("請輸入1-64之間的索引");
         }
     }
-    vec_of_zeros.join("")
+    Ok(vec_of_zeros.join(""))
 }
 
 fn _convert_hex(hex: &str) {
@@ -89,9 +89,16 @@ fn _convert_bin(bin: &str) {
 }
 
 fn _convert_inds(sel: &str) {
-    let bin = inds_to_bin(sel);
-    println!("二進位: \t{}", bin.red());
-    println!("十六進位: \t{}", bin_to_hex(&bin).blue());
+    let result = inds_to_bin(sel);
+    match result {
+        Ok(bin) => {
+            println!("二進位: \t{}", bin.red());
+            println!("十六進位: \t{}", bin_to_hex(&bin).blue());
+        },
+        Err(e) => {
+            println!("{e}");
+        }
+    }
 }
 
 /// 無限循環模式
@@ -107,11 +114,8 @@ fn _loop_mode() {
         );
         io::stdin().read_line(&mut input).expect("輸入錯誤");
 
+        // 移除換行符號
         input = input.trim_end().to_string();
-        // // 移除換行符號
-        // if let Some('\n') = input.chars().next_back() {
-        //     input.pop();
-        // }
 
         // 輸入exit時結束
         if input.to_lowercase() == "exit"
@@ -132,6 +136,7 @@ fn _loop_mode() {
         } else {
             print!("無效的輸入，請檢查長度及格式，");
         }
+        println!("");
     }
 }
 
