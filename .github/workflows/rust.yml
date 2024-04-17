@@ -30,6 +30,6 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/*/bmapconv
+          file: target/armv7-unknown-linux-gnueabihf/release/bmapconv
           asset_name: bmapconv
           tag: ${{ github.ref }}
