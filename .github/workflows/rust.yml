@@ -1,8 +1,9 @@
 name: Rust
 
 on:
-  pull_request:
-    branches: [ "main" ]
+  push:
+    tags:
+      - "*"
 
 env:
   CARGO_TERM_COLOR: always
@@ -32,3 +33,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: target/armv7-unknown-linux-gnueabihf/release/bmapconv
           asset_name: bmapconv
+          tag: ${{ github.ref }}
