@@ -40,7 +40,8 @@ lazy_static::lazy_static! {
 fn hex_to_bin(arg: &str) -> String {
     let decimal_number = u64::from_str_radix(arg, 16).expect("Invalid hexadecimal input");
     let binary_number: String = format!("{:b}", decimal_number);
-    binary_number
+    let padded_binary_number = format!("{:0>64}", binary_number);
+    padded_binary_number
 }
 
 /// 2進位轉16進位
@@ -104,6 +105,11 @@ fn _loop_mode() {
 
         // 移除換行符號
         if let Some('\n') = input.chars().next_back() {
+            input.pop();
+        }
+
+        // 移除換行符號
+        if let Some('\r') = input.chars().next_back() {
             input.pop();
         }
 
