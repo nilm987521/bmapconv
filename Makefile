@@ -3,7 +3,7 @@
 all: clean
 	cargo test
 	cargo build --release
-	upx target/release/bmapconv
+	# upx --force-macos target/release/bmapconv
 
 clean:
 	rm -rf target/
