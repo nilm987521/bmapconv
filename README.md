@@ -1,6 +1,6 @@
 # bmapconv
  BitMap(64位)轉換工具
-![image](img/info.jpg)
+![image](img/thumbnail.jpg)
 
 # 使用
 - -h 顯示說明
